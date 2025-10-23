@@ -1,0 +1,149 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+
+# Data Files - Ignore PDFs but keep directory structure
+data/raw/*.pdf
+data/processed/*
+data/sample_docs/*.pdf
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/sample_docs/.gitkeep
+
+# ChromaDB Database
+data/chroma_db/
+*.db
+*.sqlite
+*.sqlite3
+chroma.sqlite3
+
+# Model Cache
+.cache/
+models/
+*.bin
+*.pt
+*.pth
+*.onnx
+
+# Sentence Transformers Cache
+sentence_transformers/
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Temporary Files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+.#*
+
+# Test Coverage
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Type Checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+
+# Cython
+cython_debug/
+
+# Large Files
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+
+# Backup Files
+*.bak
+*.backup
+*~
+
+# Output Files
+output/
+results/
+exports/
+
+# Documentation Build
+docs/_build/
+docs/_static/
+docs/_templates/
+
+# Package Files
+*.whl
+
+# Secrets (extra safety)
+secrets.json
+credentials.json
+*.key
+*.pem
+*.cert
