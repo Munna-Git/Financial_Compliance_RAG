@@ -1,0 +1,27 @@
+# Core Dependencies
+python-dotenv==1.0.0
+pydantic==2.9.0
+pydantic-settings==2.5.2
+
+# LLM & Embeddings
+langchain==0.3.1
+langchain-community==0.3.1
+langchain-ollama==0.2.0
+langgraph==0.2.28
+sentence-transformers==3.1.1
+
+# Vector Store
+chromadb==0.5.5
+
+# Document Processing
+unstructured==0.15.13
+unstructured[pdf]==0.15.13
+pypdf2==3.0.1
+python-magic-bin==0.4.14  # For Windows file type detection
+pillow==10.4.0
+pikepdf==9.2.1
+
+# Utilities
+tqdm==4.66.5
+numpy==1.26.4
+pandas==2.2.3

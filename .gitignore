@@ -118,7 +118,7 @@ cython_debug/
 
 # Large Files
 *.zip
-*.tar
+*.tar   
 *.tar.gz
 *.rar
 *.7z
