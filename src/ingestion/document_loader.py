@@ -1,13 +1,11 @@
 """
-Document loader using unstructured library.
-Handles PDFs and extracts both text and tables.
+Document loader using PyPDF2 for better Windows compatibility.
 """
 
 import os
 from typing import List, Dict
 from pathlib import Path
-from unstructured.partition.pdf import partition_pdf
-from unstructured.documents.elements import Table, Element
+import PyPDF2
 from src.config.settings import settings
 
 
@@ -31,57 +29,34 @@ class DocumentLoader:
         print(f"Loading PDF: {file_path}")
         
         try:
-            # Partition PDF with unstructured
-            elements = partition_pdf(
-                filename=file_path,
-                strategy="fast",  # Use fast strategy for memory efficiency
-                infer_table_structure=True,
-                extract_images_in_pdf=False  # Skip images to save memory
-            )
-            
-            # Process elements
             processed_elements = []
-            for element in elements:
-                element_dict = {
-                    'text': str(element),
-                    'type': element.category,
-                    'metadata': element.metadata.to_dict() if hasattr(element, 'metadata') else {}
-                }
-                
-                # Convert tables to markdown
-                if isinstance(element, Table):
-                    element_dict['is_table'] = True
-                    element_dict['text'] = self._table_to_markdown(element)
-                else:
-                    element_dict['is_table'] = False
-                
-                processed_elements.append(element_dict)
             
-            print(f"✓ Loaded {len(processed_elements)} elements from PDF")
+            with open(file_path, 'rb') as file:
+                pdf_reader = PyPDF2.PdfReader(file)
+                num_pages = len(pdf_reader.pages)
+                
+                for page_num in range(num_pages):
+                    page = pdf_reader.pages[page_num]
+                    text = page.extract_text()
+                    
+                    if text.strip():  # Only add if text exists
+                        element_dict = {
+                            'text': text,
+                            'type': 'paragraph',
+                            'metadata': {
+                                'page_number': page_num + 1,
+                                'filename': os.path.basename(file_path)
+                            },
+                            'is_table': False
+                        }
+                        processed_elements.append(element_dict)
+            
+            print(f"✓ Loaded {len(processed_elements)} pages from PDF")
             return processed_elements
             
         except Exception as e:
             print(f"Error loading PDF: {e}")
             return []
-    
-    def _table_to_markdown(self, table_element: Table) -> str:
-        """
-        Convert table element to markdown format.
-        
-        Args:
-            table_element: Table element from unstructured
-            
-        Returns:
-            Markdown formatted table string
-        """
-        # Get table HTML and convert to markdown (simplified)
-        table_text = str(table_element)
-        
-        # Basic markdown formatting
-        # In production, use a proper HTML to markdown converter
-        markdown = f"\n\n**Table:**\n{table_text}\n\n"
-        
-        return markdown
     
     def load_directory(self, directory_path: str) -> Dict[str, List[Dict]]:
         """

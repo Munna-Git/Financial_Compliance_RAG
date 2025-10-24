@@ -66,12 +66,17 @@ class ChromaManager:
         for i in range(0, len(texts), batch_size):
             end_idx = min(i + batch_size, len(texts))
             
-            self.collection.add(
-                documents=texts[i:end_idx],
-                embeddings=embeddings[i:end_idx],
-                metadatas=metadatas[i:end_idx],
-                ids=ids[i:end_idx]
-            )
+            try:
+                self.collection.add(
+                    documents=texts[i:end_idx],
+                    embeddings=embeddings[i:end_idx],
+                    metadatas=metadatas[i:end_idx],
+                    ids=ids[i:end_idx]
+                )
+                print(f"  Added batch {i//batch_size + 1}/{(len(texts)-1)//batch_size + 1}")
+            except Exception as e:
+                print(f"  Error adding batch {i//batch_size + 1}: {e}")
+                raise
         
         print(f"✓ Successfully added {len(texts)} documents")
         print(f"Total documents in collection: {self.collection.count()}")
@@ -102,27 +107,38 @@ class ChromaManager:
         # Perform search
         results = self.collection.query(
             query_embeddings=[query_embedding],
-            n_results=n_results,
+            n_results=min(n_results, self.collection.count()),  # Don't request more than exists
             where=filter_dict,
             include=["documents", "metadatas", "distances"]
         )
         
         # Format results
         formatted_results = []
-        for i in range(len(results['documents'][0])):
-            formatted_results.append({
-                'text': results['documents'][0][i],
-                'metadata': results['metadatas'][0][i],
-                'distance': results['distances'][0][i],
-                'id': results['ids'][0][i]
-            })
+        if results['documents'] and results['documents'][0]:
+            for i in range(len(results['documents'][0])):
+                formatted_results.append({
+                    'text': results['documents'][0][i],
+                    'metadata': results['metadatas'][0][i],
+                    'distance': results['distances'][0][i],
+                    'id': results['ids'][0][i]
+                })
         
         return formatted_results
     
     def delete_collection(self) -> None:
-        """Delete the entire collection."""
-        self.client.delete_collection(settings.COLLECTION_NAME)
-        print(f"Collection '{settings.COLLECTION_NAME}' deleted")
+        """Delete the entire collection and recreate it."""
+        try:
+            self.client.delete_collection(settings.COLLECTION_NAME)
+            print(f"Collection '{settings.COLLECTION_NAME}' deleted")
+        except Exception as e:
+            print(f"Note: {e}")
+        
+        # Recreate the collection after deletion
+        self.collection = self.client.get_or_create_collection(
+            name=settings.COLLECTION_NAME,
+            metadata={"description": "Financial compliance documents"}
+        )
+        print(f"Collection '{settings.COLLECTION_NAME}' recreated")
     
     def get_count(self) -> int:
         """Get the number of documents in the collection."""
@@ -138,3 +154,8 @@ def get_chroma_manager() -> ChromaManager:
     if _chroma_manager is None:
         _chroma_manager = ChromaManager()
     return _chroma_manager
+
+def reset_chroma_manager():
+    """Reset the global ChromaDB manager instance."""
+    global _chroma_manager
+    _chroma_manager = None

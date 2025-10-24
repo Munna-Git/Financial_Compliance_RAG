@@ -25,24 +25,24 @@ class MetadataExtractor:
         }
     
     def extract_metadata(
-        self,
-        text: str,
-        element_metadata: Dict,
-        filename: str,
-        chunk_index: int
-    ) -> Dict:
+    self,
+    text: str,
+    element_metadata: Dict,
+    filename: str,
+    chunk_index: int
+) -> Dict:
         """
-        Extract comprehensive metadata from text and context.
-        
-        Args:
-            text: Text content
-            element_metadata: Original element metadata from unstructured
-            filename: Source filename
-            chunk_index: Index of chunk in document
+            Extract comprehensive metadata from text and context.
             
-        Returns:
-            Dictionary of metadata
-        """
+            Args:
+                text: Text content
+                element_metadata: Original element metadata from unstructured
+                filename: Source filename
+                chunk_index: Index of chunk in document
+                
+            Returns:
+                Dictionary of metadata
+            """
         metadata = {
             'filename': filename,
             'chunk_index': chunk_index,
@@ -53,8 +53,9 @@ class MetadataExtractor:
         # Extract document type
         metadata['doc_type'] = self._identify_document_type(filename, text)
         
-        # Extract compliance categories
-        metadata['compliance_categories'] = self._identify_compliance_categories(text)
+        # Extract compliance categories - CONVERT LIST TO STRING
+        categories = self._identify_compliance_categories(text)
+        metadata['compliance_categories'] = ','.join(categories) if categories else 'general'
         
         # Extract section information
         metadata['section'] = self._extract_section(text, element_metadata)
@@ -63,12 +64,13 @@ class MetadataExtractor:
         if 'page_number' in element_metadata:
             metadata['page_number'] = element_metadata['page_number']
         
-        # Extract dates mentioned in text
+        # Extract dates mentioned in text - CONVERT LIST TO STRING
         dates = self._extract_dates(text)
         if dates:
-            metadata['mentioned_dates'] = dates
+            metadata['mentioned_dates'] = ','.join(dates)
         
         return metadata
+
     
     def _identify_document_type(self, filename: str, text: str) -> str:
         """Identify document type from filename and content."""

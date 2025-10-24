@@ -11,7 +11,7 @@ from src.config.settings import settings
 from src.ingestion.document_loader import load_documents
 from src.ingestion.chunker import chunk_documents
 from src.ingestion.metadata_extractor import MetadataExtractor
-from src.vectorstore.chroma_manager import get_chroma_manager
+from src.vectorstore.chroma_manager import get_chroma_manager, reset_chroma_manager
 
 
 def ingest_documents(source_path: str, reset: bool = False):
@@ -73,12 +73,16 @@ def ingest_documents(source_path: str, reset: bool = False):
     
     # Step 4: Initialize ChromaDB
     print("Step 4: Initializing vector store...")
-    chroma_manager = get_chroma_manager()
     
     if reset:
         print("Resetting existing collection...")
+        # Reset the global manager to force recreation
+        reset_chroma_manager()
+    
+    chroma_manager = get_chroma_manager()
+    
+    if reset:
         chroma_manager.delete_collection()
-        chroma_manager = get_chroma_manager()  # Recreate
     
     # Step 5: Add to vector store
     print("Step 5: Adding documents to vector store...")

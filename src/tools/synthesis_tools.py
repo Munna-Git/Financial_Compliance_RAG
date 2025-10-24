@@ -40,11 +40,16 @@ def generate_response(
     
     for idx, doc in enumerate(documents, 1):
         context_parts.append(f"[Document {idx}]:\n{doc['text']}\n")
+        
+        # Parse comma-separated string back to list for display
+        categories_str = doc['metadata'].get('compliance_categories', '')
+        categories_list = categories_str.split(',') if categories_str else []
+        
         citations.append({
             'index': idx,
             'filename': doc['metadata'].get('filename', 'unknown'),
             'chunk_index': doc['metadata'].get('chunk_index', 0),
-            'compliance_categories': doc['metadata'].get('compliance_categories', [])
+            'compliance_categories': categories_list  # Now a list again
         })
     
     context = "\n".join(context_parts)
