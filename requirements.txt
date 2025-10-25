@@ -20,10 +20,21 @@ pypdf2==3.0.1
 python-magic-bin==0.4.14  # For Windows file type detection
 pillow==10.4.0
 pikepdf==9.2.1
+PyPDF2==3.0.1
 
 # Utilities
 tqdm==4.66.5
 numpy==1.26.4
 pandas==2.2.3
 
-PyPDF2==3.0.1
+
+# Multi-Modal Support (NEW)
+torch==2.1.0
+torchvision==0.16.0
+transformers==4.45.0
+pytesseract==0.3.10
+
+# API Deployment (NEW)
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+python-multipart==0.0.9
