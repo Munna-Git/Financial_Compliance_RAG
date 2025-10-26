@@ -147,3 +147,6 @@ credentials.json
 *.key
 *.pem
 *.cert
+
+
+personal.md
