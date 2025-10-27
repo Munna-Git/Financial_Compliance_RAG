@@ -1,0 +1,1 @@
+# You can skip from 1:55 to 4:15 because the query is processing in the backend. For faster processing we can use bigger models like models with 8B or 13B parameters. Currently we are using Ollama Mini Phi due to hardware constraints.
